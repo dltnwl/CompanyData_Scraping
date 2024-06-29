@@ -1,0 +1,11 @@
+requests
+pandas
+import_ipynb
+warnings
+BeautifulSoup
+datetime
+pdfplumber
+zipfile
+os
+re
+math
