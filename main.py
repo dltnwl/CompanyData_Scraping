@@ -4,6 +4,7 @@ from email.mime.text import MIMEText
 from email.mime.base import MIMEBase
 from email import encoders
 
+
 # SMTP 인스턴스 생성
 smtp = smtplib.SMTP('smtp.gmail.com', 587)
 
@@ -40,7 +41,7 @@ part.add_header(
 msg.attach(part)  # 완성된 파트(첨부 파일)를 메시지 객체에 추가
 
 # 메일 보내기
-smtp.sendmail('dltnwl93@gmail.com', 'dltnwl9322@gmail.com', message.as_string())
+smtp.sendmail('dltnwl93@gmail.com', 'dltnwl9322@gmail.com', msg.as_string())
 
 print("성공적으로 메일을 보냈습니다.")
 
