@@ -38,7 +38,7 @@ if response.status_code == 200:
         df.drop(columns=['번호'])
 
         # 쉼표로 구분된 텍스트 파일로 저장
-        df.to_csv(f'002_Innobiz_{formatted_date}.csv', index=False, sep=',')
+        df.to_csv(f'Data/002_Innobiz_{formatted_date}.csv', index=False, sep=',')
         print("CSV 파일로 변환 완료")
 else:
     print("요청 실패:", response.status_code)
