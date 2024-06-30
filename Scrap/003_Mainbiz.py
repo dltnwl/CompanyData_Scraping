@@ -56,7 +56,7 @@ if response.status_code == 200:
                 # 첨부파일 다운로드
                 file_response = requests.get(download_url)
                 if file_response.status_code == 200:
-                    with open('{Directory}/mainbiz_download.xlsx', 'wb') as file:
+                    with open(f'{Directory}/mainbiz_download.xlsx', 'wb') as file:
                         file.write(file_response.content)
                     print("엑셀 파일 다운로드 완료")
 
