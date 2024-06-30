@@ -37,7 +37,7 @@ if response.status_code == 200:
     
     df.insert(0, 'GB', '004')
     #df2=df.drop(columns=['Unnamed: 0'])
-    df.to_csv(f'004_Company_lab_{formatted_date}.csv', index=False, sep=',')
+    df.to_csv(f'Data/004_Company_lab_{formatted_date}.csv', index=False, sep=',')
     
     print("엑셀 파일 다운로드 완료")
 else:
