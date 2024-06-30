@@ -8,6 +8,9 @@ from email import encoders
 import subprocess
 from Scrap.date_time import get_first_and_last_day_of_previous_month
 
+first_day_of_previous_month,  last_day_of_previous_month= get_first_and_last_day_of_previous_month()
+formatted_date = first_day_of_previous_month.strftime('%Y%m')
+
 # Scrap 폴더 안의 스크립트 실행 목록
 scripts = [
     '001_NewTech.py',
