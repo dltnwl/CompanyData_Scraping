@@ -16,7 +16,14 @@ scripts = [
     '001_NewTech.py',
     '002_InnoBiz.py',
     '003_Mainbiz.py',
-    '004_CompanyLab.py'
+    '004_CompanyLab.py', 
+    '009_NET.py', 
+    '010_NEP.py', 
+    '011_KOR_Cons.py', 
+    '013_Info_Cons.py', 
+    '014_Elect.py', 
+    '015_Fire.py', 
+    '016_019_Etc.py', 
 ]
 
 # 각 스크립트를 subprocess로 실행
@@ -59,7 +66,14 @@ msg.attach(MIMEText(body, 'plain'))
 filenames = [f'001_NewTech_{formatted_date}.csv', 
              f'002_Innobiz_{formatted_date}.csv', 
              f'003_Mainbiz_{formatted_date}.csv', 
-             f'004_Company_lab_{formatted_date}.csv'
+             f'004_Company_lab_{formatted_date}.csv', 
+             f'009_NET_{formatted_date}.csv', 
+             f'010_NEP_{formatted_date}.csv', 
+             f'011_KOR_Cons_{formatted_date}.csv', 
+             f'013_Info_Cons_{formatted_date}.csv', 
+             f'014_Elect_{formatted_date}.csv', 
+             f'015_Fire_{formatted_date}.csv', 
+             f'016_019_Etc_{formatted_date}.csv'
             ]
 folder_path = 'Data/'  # 파일이 위치한 폴더 경로
 
