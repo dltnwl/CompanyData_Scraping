@@ -61,7 +61,7 @@ filenames = [f'001_NewTech_{formatted_date}.csv',
              f'003_Mainbiz_{formatted_date}.csv', 
              f'004_Company_lab_{formatted_date}.csv'
             ]
-folder_path = 'Scrap/'  # 파일이 위치한 폴더 경로
+folder_path = 'Data/'  # 파일이 위치한 폴더 경로
 
 # 파일 첨부 과정
 for filename in filenames:
