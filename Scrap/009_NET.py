@@ -34,9 +34,11 @@ elif month==1:
 # 파일 다운로드 요청
 response = requests.get(base_url, params=params)
 
+Directory='Data'
+
 # 요청 성공 여부 확인
 if response.status_code == 200:
-    with open(f'Data/{year}년 제{No}회 신기술(NET) 인증기술 공고.pdf', 'wb') as f:
+    with open(f'{Directory}/{year}년 제{No}회 신기술(NET) 인증기술 공고.pdf', 'wb') as f:
         f.write(response.content)
     print("Download completed successfully!")
 else:
@@ -44,7 +46,7 @@ else:
     
 
 # PDF 파일 열기
-with pdfplumber.open(f'Data/{year}년 제{No}회 신기술(NET) 인증기술 공고.pdf') as pdf:
+with pdfplumber.open(f'{Directory}/{year}년 제{No}회 신기술(NET) 인증기술 공고.pdf') as pdf:
     # 추출한 데이터프레임을 저장할 리스트
     all_tables = []
     
@@ -64,6 +66,6 @@ with pdfplumber.open(f'Data/{year}년 제{No}회 신기술(NET) 인증기술 공
         df3 = df2.replace('\n', ' ', regex=True)
         df3.insert(0, 'GB', '009')
         df4 = df3.rename(columns={'유효\n기간': '유효기간'})
-        df4.to_csv(f'Data/009_NET_{formatted_date}.csv', index=False, sep=',')
+        df4.to_csv(f'{Directory}/009_NET_{formatted_date}.csv', index=False, sep=',')
     else:
         print("No tables found in the PDF.")
