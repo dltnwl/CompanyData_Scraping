@@ -30,10 +30,10 @@ response = session.post(download_url, data=payload)
 
 # 응답 확인 및 파일 저장
 if response.status_code == 200:
-    with open('companylab_download.xlsx', 'wb') as file:
+    with open('Data/companylab_download.xlsx', 'wb') as file:
         file.write(response.content)
 
-    df = pd.read_excel('companylab_download.xlsx')
+    df = pd.read_excel('Data/companylab_download.xlsx')
     
     df.insert(0, 'GB', '004')
     #df2=df.drop(columns=['Unnamed: 0'])
