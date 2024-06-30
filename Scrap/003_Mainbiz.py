@@ -60,7 +60,7 @@ if response.status_code == 200:
                         file.write(file_response.content)
                     print("엑셀 파일 다운로드 완료")
 
-                    df = pd.read_excel('{Directory}/mainbiz_download.xlsx')
+                    df = pd.read_excel(f'{Directory}/mainbiz_download.xlsx')
                 
                     df.insert(0, 'GB', '003')
                     df2=df.drop(columns=['번호'])
