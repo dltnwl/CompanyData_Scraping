@@ -62,7 +62,7 @@ if response.status_code == 200:
                 
                     df.insert(0, 'GB', '003')
                     df2=df.drop(columns=['번호'])
-                    df2.to_csv(f'003_Mainbiz_{formatted_date}.csv', index=False, sep=',')
+                    df2.to_csv(f'Data/003_Mainbiz_{formatted_date}.csv', index=False, sep=',')
                 else:
                     print("첨부파일 다운로드 실패:", file_response.status_code)
             else:
