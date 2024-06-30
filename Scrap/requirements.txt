@@ -4,3 +4,4 @@ import_ipynb
 beautifulsoup4
 pdfplumber
 lxml
+openpyxl
