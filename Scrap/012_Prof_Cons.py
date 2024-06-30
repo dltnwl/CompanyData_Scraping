@@ -43,7 +43,7 @@ zip_path = f'{Directory}/전문건설업시공능력평가공시(2023)주력분�
 
 
 # 추출할 디렉토리
-extract_dir = 'extracted_pdfs'
+extract_dir = f'{Directory}/extracted_pdfs'
 os.makedirs(extract_dir, exist_ok=True)
 
 # ZIP 파일 열기
