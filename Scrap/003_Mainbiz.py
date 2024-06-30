@@ -54,11 +54,11 @@ if response.status_code == 200:
                 # 첨부파일 다운로드
                 file_response = requests.get(download_url)
                 if file_response.status_code == 200:
-                    with open('mainbiz_download.xlsx', 'wb') as file:
+                    with open('Data/mainbiz_download.xlsx', 'wb') as file:
                         file.write(file_response.content)
                     print("엑셀 파일 다운로드 완료")
 
-                    df = pd.read_excel('mainbiz_download.xlsx')
+                    df = pd.read_excel('Data/mainbiz_download.xlsx')
                 
                     df.insert(0, 'GB', '003')
                     df2=df.drop(columns=['번호'])
