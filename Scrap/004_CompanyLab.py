@@ -32,10 +32,10 @@ Directory='Data'
 
 # 응답 확인 및 파일 저장
 if response.status_code == 200:
-    with open('{Directory}/companylab_download.xlsx', 'wb') as file:
+    with open(f'{Directory}/companylab_download.xlsx', 'wb') as file:
         file.write(response.content)
 
-    df = pd.read_excel('{Directory}/companylab_download.xlsx')
+    df = pd.read_excel(f'{Directory}/companylab_download.xlsx')
     
     df.insert(0, 'GB', '004')
     #df2=df.drop(columns=['Unnamed: 0'])
