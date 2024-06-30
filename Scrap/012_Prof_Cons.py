@@ -43,7 +43,7 @@ zip_path = f'{Directory}/전문건설업시공능력평가공시(2023)주력분�
 
 
 # 추출할 디렉토리
-extract_dir = f'{Directory}/extracted_pdfs'
+extract_dir = f'{Directory}/extracted'
 os.makedirs(extract_dir, exist_ok=True)
 
 # ZIP 파일 열기
@@ -76,12 +76,11 @@ with zipfile.ZipFile(zip_path, 'r') as zip_ref:
                     combined_df = pd.concat(all_tables, ignore_index=True)  # 여러 DataFrame을 하나로 결합
                     combined_df['주력분야'] =re.search(r'\((.*?)\)', decoded_file_name).group(1)
                     # CSV 파일로 저장
-                    csv_path = os.path.join(extract_dir, f"{Directory}/012_{os.path.splitext(decoded_file_name)[0]}_{formatted_date}.csv")
+                    csv_path = os.path.join(extract_dir, f"012_{os.path.splitext(decoded_file_name)[0]}_{formatted_date}.csv")
                     combined_df.to_csv(csv_path, index=False, encoding='utf-8-sig', sep=',')
         
         full_data.append(combined_df)
     
     full_data_df=pd.concat(full_data)
     full_data_df.insert(0, 'GB', '012')
-    csv_path = os.path.join(extract_dir, f"{Directory}/012_Prof_Cons_{formatted_date}.csv")
-    full_data_df.to_csv(csv_path, index=False, encoding='utf-8-sig', sep=',')
+    full_data_df.to_csv(f"{Directory}/012_Prof_Cons_{formatted_date}.csv", index=False, encoding='utf-8-sig', sep=',')
