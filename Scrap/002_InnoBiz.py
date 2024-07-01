@@ -17,7 +17,7 @@ formatted_date = first_day_of_previous_month.strftime('%Y%m')
 
 
 # ASP 파일에서 생성된 HTML 페이지 URL
-url = "https://www.innobiz.net/company/new_excel.asp"
+url = "https://www.innobiz.net/company/new_excel_ALL.asp"
 params = {
     'startdate': first_day_of_previous_month.strftime('%Y-%m-%d'),
     'enddate': last_day_of_previous_month.strftime('%Y-%m-%d')
@@ -30,7 +30,7 @@ if response.status_code == 200:
     # HTML에서 테이블 읽기
     df_list = pd.read_html(response.text)
     if df_list:
-        df = df_list[0]  # 첫 번째 테이블 선택
+        df = df_list[1]  # 첫 번째 테이블 선택
 
         df.columns = df.iloc[0]
         df = df[1:].reset_index(drop=True)
