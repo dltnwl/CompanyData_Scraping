@@ -36,10 +36,10 @@ if response.status_code == 200:
         df = df[1:].reset_index(drop=True)
         
         df.insert(0, 'GB', '002')
-        df.drop(columns=['번호'])
+        df2=df.drop(columns=['번호'])
 
         # 쉼표로 구분된 텍스트 파일로 저장
-        df.to_csv(f'{Directory}/002_Innobiz_{formatted_date}.csv', index=False, sep=',')
+        df2.to_csv(f'{Directory}/002_Innobiz_{formatted_date}.csv', index=False, sep=',')
         print("CSV 파일로 변환 완료")
 else:
     print("요청 실패:", response.status_code)
