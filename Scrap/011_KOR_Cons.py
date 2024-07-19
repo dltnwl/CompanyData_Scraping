@@ -7,7 +7,7 @@ import pandas as pd
 import import_ipynb
 from date_time import get_first_and_last_day_of_previous_month
 import warnings
-
+import re
 
 warnings.filterwarnings('ignore')
 
@@ -61,10 +61,64 @@ def download_file(url):
 download_link = 'http://www.cak.or.kr/board/ajax/fileDownload.do?dataId=39614&boardId=news_notice'
 
 # 파일 다운로드 실행
-download_file(download_link)
+local_filename = download_file(download_link)
 
-df = pd.read_excel(download_file(download_link))[4:]
-new_columns = ['순위', '상호', '대표자', '소재지', '전화번호', '등록번호', '시공능력평가액(토건)', '공사실적평가', '경영평가액', '기술능력평가액', '신인도평가액', '평가액(토목)', '평가액(건축)', '직전년도토건', '직전년도토목', '직전년도건축', '보유기술자수']
-df.columns = new_columns
-df.insert(0, 'GB', '011')
-df.to_csv(f'{Directory}/011_KOR_Cons_{formatted_date}.csv', index=False, sep=',')
+# 엑셀 파일의 각 시트를 읽어옴
+excel_file = pd.ExcelFile(local_filename)
+sheet_names = excel_file.sheet_names
+
+# 각 시트를 DataFrame으로 변환하여 하나의 DataFrame으로 결합
+all_data = pd.DataFrame()
+for sheet in sheet_names:
+    if sheet=='1. 토건': 
+        df = pd.read_excel(excel_file, sheet_name=sheet, skiprows=4)
+        new_columns = ['순위', '상호', '대표자', '소재지', '전화번호', '등록번호', '시공능력평가액(토건)', 
+                       '공사실적평가', '경영평가액', '기술능력평가액', '신인도평가액', '평가액(토목)', '평가액(건축)', 
+                       '직전년도토건', '직전년도토목', '직전년도건축', '보유기술자수']
+        df.columns = new_columns
+        
+        # '직전년도토건', '직전년도토목', '직전년도건축' 및 '시공능력평가액(토건)', '평가액(토목)', '평가액(건축)'을 각각 변환하여 행으로 결합
+        df_togon = df[['순위', '상호', '대표자', '소재지', '전화번호', '등록번호', '공사실적평가', 
+                       '경영평가액', '기술능력평가액', '신인도평가액', '보유기술자수']].copy()
+        df_togon['업종'] = '토건'
+        df_togon['시공능력평가액'] = df['시공능력평가액(토건)']
+        df_togon['직전년도평가액'] = df['직전년도토건']
+        
+        df_tomok = df[['순위', '상호', '대표자', '소재지', '전화번호', '등록번호', '공사실적평가', 
+                       '경영평가액', '기술능력평가액', '신인도평가액', '보유기술자수']].copy()
+        df_tomok['업종'] = '토목'
+        df_tomok['시공능력평가액'] = df['평가액(토목)']
+        df_tomok['직전년도평가액'] = df['직전년도토목']
+        
+        df_geonchuk = df[['순위', '상호', '대표자', '소재지', '전화번호', '등록번호', '공사실적평가', 
+                          '경영평가액', '기술능력평가액', '신인도평가액', '보유기술자수']].copy()
+        df_geonchuk['업종'] = '건축'
+        df_geonchuk['시공능력평가액'] = df['평가액(건축)']
+        df_geonchuk['직전년도평가액'] = df['직전년도건축']
+        
+        all_data = pd.concat([df_togon, df_tomok, df_geonchuk], ignore_index=True)
+
+        columns_order = ['업종', '순위', '상호', '대표자', '소재지', '전화번호', '등록번호', '시공능력평가액', '공사실적평가', 
+                         '경영평가액', '기술능력평가액', '신인도평가액', '직전년도평가액', '보유기술자수']
+        all_data = all_data[columns_order]
+    
+    else:
+        df = pd.read_excel(excel_file, sheet_name=sheet, skiprows=4)
+        new_columns = ['순위', '상호', '대표자', '소재지', '전화번호', '등록번호', '시공능력평가액', '공사실적평가', 
+                       '경영평가액', '기술능력평가액', '신인도평가액', '직전년도평가액', '보유기술자수']
+        df.columns = new_columns
+        df.insert(0,'업종', re.findall(r'[가-힣]+',sheet)[0])  # 시트 이름을 새로운 열로 추가
+        all_data = pd.concat([all_data, df], ignore_index=True)
+
+
+int_columns = ['순위', '등록번호',  '시공능력평가액', '공사실적평가', '경영평가액', '기술능력평가액', '신인도평가액', '직전년도평가액', '보유기술자수']
+for col in int_columns:
+    all_data[col] = pd.to_numeric(all_data[col], errors='coerce').fillna(0).astype(int)
+
+# GB 열 추가
+all_data.insert(0, 'GB', '011')
+
+# 결합된 데이터를 하나의 CSV 파일로 저장
+all_data.to_csv(f'{Directory}/011_KOR_Cons_{formatted_date}.csv', index=False, sep=',')
+
+print("모든 시트가 결합되어 하나의 CSV 파일로 저장되었습니다.")
