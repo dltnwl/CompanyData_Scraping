@@ -76,30 +76,33 @@ for sheet in sheet_names:
                        '공사실적평가', '경영평가액', '기술능력평가액', '신인도평가액', '평가액(토목)', '평가액(건축)', 
                        '직전년도토건', '직전년도토목', '직전년도건축', '보유기술자수']
         df.columns = new_columns
-        df.insert(0,'전체건수', df['상호'].count())  # 전체 건수 추가 
+        df.insert(0,'전체건수', df['순위'].max())  # 전체 건수 추가 
         
         # '직전년도토건', '직전년도토목', '직전년도건축' 및 '시공능력평가액(토건)', '평가액(토목)', '평가액(건축)'을 각각 변환하여 행으로 결합
         df_togon = df[['전체건수', '순위',  '상호', '대표자', '소재지', '전화번호', '등록번호', '공사실적평가', 
                        '경영평가액', '기술능력평가액', '신인도평가액', '보유기술자수']].copy()
         df_togon['업종'] = '토건'
+        df_togon['주력분야'] = np.nan
         df_togon['시공능력평가액'] = df['시공능력평가액(토건)']
         df_togon['직전년도평가액'] = df['직전년도토건']
         
         df_tomok = df[['전체건수', '순위', '상호', '대표자', '소재지', '전화번호', '등록번호', '공사실적평가', 
                        '경영평가액', '기술능력평가액', '신인도평가액', '보유기술자수']].copy()
         df_tomok['업종'] = '토건(토목)'
+        df_tomok['주력분야'] = np.nan
         df_tomok['시공능력평가액'] = df['평가액(토목)']
         df_tomok['직전년도평가액'] = df['직전년도토목']
         
         df_geonchuk = df[['전체건수', '순위', '상호', '대표자', '소재지', '전화번호', '등록번호', '공사실적평가', 
                           '경영평가액', '기술능력평가액', '신인도평가액', '보유기술자수']].copy()
         df_geonchuk['업종'] = '토건(건축)'
+        df_geonchuk['주력분야'] = np.nan
         df_geonchuk['시공능력평가액'] = df['평가액(건축)']
         df_geonchuk['직전년도평가액'] = df['직전년도건축']
         
         all_data = pd.concat([df_togon, df_tomok, df_geonchuk], ignore_index=True)
 
-        columns_order = ['업종', '전체건수', '순위', '상호', '대표자', '소재지', '전화번호', '등록번호', '시공능력평가액', '공사실적평가', 
+        columns_order = ['업종', '주력분야', '전체건수', '순위', '상호', '대표자', '소재지', '전화번호', '등록번호', '시공능력평가액', '공사실적평가', 
                          '경영평가액', '기술능력평가액', '신인도평가액', '직전년도평가액', '보유기술자수']
         all_data = all_data[columns_order]
     
@@ -109,16 +112,20 @@ for sheet in sheet_names:
                        '경영평가액', '기술능력평가액', '신인도평가액', '직전년도평가액', '보유기술자수']
         df.columns = new_columns
         df.insert(0,'업종', re.findall(r'[가-힣]+',sheet)[0])  # 시트 이름을 새로운 열로 추가
-        df.insert(1,'전체건수', df['상호'].count())  # 전체 건수 추가 
+        df.insert(1,'주력분야', np.nan)  # 전체 건수 추가 
+        df.insert(2,'전체건수', df['순위'].max())  # 전체 건수 추가 
+        
         all_data = pd.concat([all_data, df], ignore_index=True)
 
 
-int_columns = ['전체건수','순위', '등록번호',  '시공능력평가액', '공사실적평가', '경영평가액', '기술능력평가액', '신인도평가액', '직전년도평가액', '보유기술자수']
+int_columns = ['전체건수','순위', '등록번호',  '시공능력평가액', '공사실적평가', '경영평가액', '기술능력평가액', 
+               '신인도평가액', '직전년도평가액', '보유기술자수']
 for col in int_columns:
     all_data[col] = pd.to_numeric(all_data[col], errors='coerce').fillna(0).astype(int)
 
 # GB 열 추가
 all_data.insert(0, 'GB', '종합')
+
 
 # 결합된 데이터를 하나의 CSV 파일로 저장
 all_data.to_csv(f'{Directory}/011_KOR_Cons_{formatted_date}.csv', index=False, sep=',')
