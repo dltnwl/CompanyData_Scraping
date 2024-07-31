@@ -96,4 +96,4 @@ for chunk_start in range(start_page, end_page + 1, epoch):
         final_df = pd.concat(all_data_frames, ignore_index=True)
         final_df.insert(0, 'GB', '014')
         filename = f'{Directory}/014_Elect_{formatted_date}_pages_{chunk_start}_to_{chunk_end}.csv'
-        final_df.to_csv(filename, index=False, encoding='utf-8-sig')
+        final_df.to_csv(filename, index=False, encoding='euc-kr')
