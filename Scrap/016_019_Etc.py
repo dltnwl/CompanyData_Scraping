@@ -64,4 +64,4 @@ for k in group_list:
 final_df = pd.concat(all_data_frames, ignore_index=True)
 
 # CSV 파일로 저장
-final_df.to_csv(f'{Directory}/016_019_Etc_{formatted_date}.csv', index=False, encoding='utf-8-sig')
+final_df.to_csv(f'{Directory}/016_019_Etc_{formatted_date}.csv', index=False, encoding='euc-kr')
