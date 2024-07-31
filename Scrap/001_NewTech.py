@@ -79,4 +79,4 @@ df['Date'] = pd.to_datetime(df['Date'])
 filtered_df = df[(df['Date'] >= first_day_of_previous_month) & (df['Date'] <= last_day_of_previous_month)]
 filtered_df.insert(0, 'GB', '001')
 
-filtered_df.to_csv(f'{Directory}/001_NewTech_{formatted_date}.csv', index=False, encoding='utf-8-sig')
+filtered_df.to_csv(f'{Directory}/001_NewTech_{formatted_date}.csv', index=False, encoding='euc-kr')
