@@ -64,4 +64,4 @@ while fetch_data(url, i).columns[0]!='list':
 df=pd.concat(result_df_f)
 df['id']=df['id'].str.replace('}', '')
 df.insert(0, 'GB', '013')
-df.to_csv(f'{Directory}/013_Info_Cons_{formatted_date}.csv', index=False)
+df.to_csv(f'{Directory}/013_Info_Cons_{formatted_date}.csv', index=False, encoding='euc-kr')
