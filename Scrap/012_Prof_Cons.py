@@ -91,4 +91,4 @@ with zipfile.ZipFile(zip_path, 'r') as zip_ref:
     columns_order = ['GB', '업종', '주력분야', '전체건수', '순위', '상호', '대표자', '소재지', '전화번호', '등록번호', 
                      '시공능력평가액', '공사실적평가','경영평가액', '기술능력평가액', '신인도평가액', '직전년도평가액', '보유기술자수']
     full_data_df2 = full_data_df[columns_order]
-    full_data_df2.to_csv(f"{Directory}/012_Prof_Cons_{formatted_date}.csv", index=False, encoding='utf-8-sig', sep=',')
+    full_data_df2.to_csv(f"{Directory}/012_Prof_Cons_{formatted_date}.csv", index=False, encoding='euc-kr', sep=',')
