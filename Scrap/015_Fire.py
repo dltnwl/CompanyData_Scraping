@@ -59,5 +59,5 @@ for i in range(1,end_page+1):
 
 df=pd.concat(result_df_f)
 df.insert(0, 'GB', '015')
-df.to_csv(f'015_Fire_{formatted_date}.csv', index=False, encoding='utf-8-sig')
+df.to_csv(f'015_Fire_{formatted_date}.csv', index=False, encoding='euc-kr')
 print(df)
