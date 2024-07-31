@@ -128,6 +128,6 @@ all_data.insert(0, 'GB', '종합')
 
 
 # 결합된 데이터를 하나의 CSV 파일로 저장
-all_data.to_csv(f'{Directory}/011_KOR_Cons_{formatted_date}.csv', index=False, sep=',')
+all_data.to_csv(f'{Directory}/011_KOR_Cons_{formatted_date}.csv', index=False, sep=',',  encoding='euc-kr')
 
 print("모든 시트가 결합되어 하나의 CSV 파일로 저장되었습니다.")
