@@ -45,6 +45,7 @@ for k in group_list:
                         "경영평가액": detail_soup.find("th", text="경영평가액").find_next_sibling("td").text.strip(),
                         "기술능력평가액": detail_soup.find("th", text="기술능력평가액").find_next_sibling("td").text.strip(),
                         "신인도평가액": detail_soup.find("th", text="신인도평가액").find_next_sibling("td").text.strip()
+                        "보유기술자총수":detail_soup.find("th", text="보유기술자총수").find_next_sibling("td").text.strip()
                         }
                     company_details.append(company_info)  # 리스트에 회원 정보 추가
                 except AttributeError:
