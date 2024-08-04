@@ -50,7 +50,7 @@ for k in group_list:
                 except AttributeError:
                     print(f"Error retrieving details for memberNo {member_no}, skipping to next.")
         i += 1  # 다음 페이지로 이동
-
-# 데이터프레임 생성 및 CSV로 저장
-final_df = pd.DataFrame(company_details)
-final_df.to_csv(f'{Directory}/016_019_Etc_{formatted_date}.csv', index=False, encoding='euc-kr')
+    print(f"업종 {k} 완료.")
+    # 데이터프레임 생성 및 CSV로 저장
+    final_df = pd.DataFrame(company_details)
+    final_df.to_csv(f'{Directory}/016_019_Etc_{formatted_date}_{k}_detail.csv', index=False, encoding='euc-kr')
