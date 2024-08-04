@@ -101,4 +101,5 @@ for k in group_list:
     print(f"업종 {k} 완료.")
     # 데이터프레임 생성 및 CSV로 저장
     final_df = pd.DataFrame(company_details)
+    final_df['업종']=k
     final_df.to_csv(f'016_019_Etc_{formatted_date}_{k}_detail.csv', index=False, encoding='euc-kr')
