@@ -1,0 +1,94 @@
+import requests
+import pdfplumber
+import zipfile
+import os
+import pandas as pd
+from urllib.parse import quote
+import warnings
+import re
+from datetime import datetime
+warnings.filterwarnings('ignore')
+
+now = datetime.now()
+formatted_date = now.strftime("%Y%m%d")
+
+#file_names = ['(2023)업종','(2022)주력분야','(2022)업종','(2021)','(2020)','(2019)','(2018)','(2017)','(2016)']
+file_names = ['(2017)']
+
+
+for file_gb in file_names: 
+    zip_path = f'./cap_amt/전문건설업시공능력평가공시{file_gb}.zip'
+    
+    # 추출할 디렉토리
+    extract_dir = 'extracted_pdfs'
+    os.makedirs(extract_dir, exist_ok=True)
+    
+    # ZIP 파일 열기
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        # ZIP 파일 내의 모든 파일을 추출 디렉토리로 추출
+        zip_ref.extractall(extract_dir)
+        
+        full_data = []
+        for file_name in zip_ref.namelist():
+            #try:
+            #    decoded_file_name = file_name.encode('cp437').decode('euc-kr')
+            #    print(f"Decoded file name: {decoded_file_name}")  # 디코딩된 파일 이름 출력
+            #except UnicodeEncodeError:
+            decoded_file_name = file_name
+
+            pdf_path = os.path.join(extract_dir, decoded_file_name)
+
+            if os.path.exists(pdf_path):
+                if pdf_path.endswith('.pdf'):
+                    # PDF 파일 열기
+                    with pdfplumber.open(pdf_path) as pdf:
+                        all_tables = []
+                        # 각 페이지를 순회하며 텍스트 추출
+                        for page in pdf.pages:
+                            tables = page.extract_tables()
+                            for table in tables:
+                                columns = [table[0][i] if table[1][i] is None else table[1][i] for i in range(len(table[1]))]
+                                df = pd.DataFrame(table[2:], columns=columns)
+                                all_tables.append(df)
+                    
+                        # CSV 파일로 저장
+                        if all_tables:
+                            filtered_tables = [df for df in all_tables if df.shape[1] > 1] 
+                            combined_df = pd.concat(filtered_tables, ignore_index=True)
+                            
+                            # 정규식 매칭 확인 후 추출
+                            try:
+                                #업종_match = re.search(r'\d+\s*([가-힣]+)\s*\(.*?\)', decoded_file_name.encode('cp437').decode('euc-kr'))
+                                #주력분야_match = re.search(r'\((.*?)\)', decoded_file_name.encode('cp437').decode('euc-kr'))
+
+                                업종_match = re.search(r'[가-힣]+', decoded_file_name.encode('cp437').decode('euc-kr'))
+                                주력분야_match = re.search(r'\((.*?)\)', decoded_file_name.encode('cp437').decode('euc-kr'))
+                                
+                            except:
+                                #업종_match = re.search(r'\d+\s*([가-힣]+)\s*\(.*?\)', decoded_file_name)
+                                #주력분야_match = re.search(r'\((.*?)\)', decoded_file_name)
+
+                                업종_match = re.search(r'[가-힣]+', decoded_file_name)
+                                주력분야_match = re.search(r'\((.*?)\)', decoded_file_name)
+
+                            #combined_df['업종'] = 업종_match.group(1) if 업종_match else ''
+                            #combined_df['주력분야'] = 주력분야_match.group(1) if 주력분야_match else ''
+                            
+                            combined_df['업종'] = 업종_match.group(0) if 업종_match else ''
+                            combined_df['주력분야'] = 주력분야_match.group(0) if 주력분야_match else ''
+                            
+                            columns_name = ['연번', '상호', '업종','주력분야', '대표자', '소재지', '전화번호', '총액', '공사실적\n평가액', 
+                                            '경영\n평가액', '기술능력\n평가액', '신인도\n평가액', '(직전년도)\n건설공사\n실적', '기술자\n수']
+                            
+                            combined_df_new = combined_df[columns_name]
+                            csv_path = os.path.join(extract_dir, f"012_{os.path.splitext(decoded_file_name)[0]}_{formatted_date}.csv")
+                            combined_df_new.to_csv(csv_path, index=False, encoding='utf-8-sig', sep=',')
+                            
+                            full_data.append(combined_df_new)
+            else:
+                print(f"File does not exist: {pdf_path}")  # 파일이 존재하지 않는 경우 경고 출력
+
+        if full_data:  # full_data가 비어있지 않은 경우에만 concat 수행
+            full_data_df = pd.concat(full_data)
+            full_data_df.insert(0, 'GB', '012')
+            full_data_df.to_csv(f"012_Prof_Cons_{file_gb}_{formatted_date}.csv", index=False, encoding='utf-8-sig', sep=',')
