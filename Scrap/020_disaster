@@ -1,0 +1,44 @@
+import requests
+import pdfplumber
+import pandas as pd
+
+# PDF 파일을 URL에서 다운로드
+url = "https://www.moel.go.kr/common/downloadFile.do?file_seq=20231203359&bbs_seq=20231202279&bbs_id=9&file_ext=pdf"
+response = requests.get(url, verify=False)
+
+# 파일로 저장
+with open("downloaded_file.pdf", "wb") as file:
+    file.write(response.content)
+
+# pdfplumber를 사용하여 PDF 열기
+with pdfplumber.open("downloaded_file.pdf") as pdf:
+    df_dict = {}  # DataFrame을 저장할 딕셔너리 초기화
+    current_df = None  # 현재 작업 중인 DataFrame
+    df_counter = 1  # DataFrame의 번호를 세기 위한 카운터
+
+    for page in pdf.pages:
+        # 페이지에서 테이블 추출
+        tables = page.extract_tables()
+
+        for table in tables:
+            if table:  # 테이블이 존재하는 경우
+                columns = table[0]  # 현재 테이블의 columns
+
+                if current_df is not None and current_df.columns.tolist() == columns:
+                    # 직전 DataFrame의 columns와 동일한 경우 데이터 추가 (concat)
+                    new_data = pd.DataFrame(table[1:], columns=columns)
+                    new_data = new_data.applymap(lambda x: x.replace("\n", " ") if isinstance(x, str) else x)
+                    current_df = pd.concat([current_df, new_data], ignore_index=True)
+                    df_dict[df_name] = current_df 
+                else:
+                    # 새로운 DataFrame 생성
+                    current_df = pd.DataFrame(table[1:], columns=columns)
+                    current_df = current_df.applymap(lambda x: x.replace("\n", " ") if isinstance(x, str) else x)
+                    df_name = f'df{df_counter}'
+                    df_dict[df_name] = current_df
+                    df_counter += 1
+
+excel_file = "disaster.xlsx"
+with pd.ExcelWriter(excel_file) as writer:
+    for df_name, df in df_dict.items():
+        df.to_excel(writer, sheet_name=df_name, index=False)
